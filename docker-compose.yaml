@@ -1,0 +1,105 @@
+version: '3'
+services:
+  api:
+    container_name: api_go
+    hostname: api
+    build:
+      context: ./go-grpc-api-gateway
+    ports:
+      - "50050:50050"
+    depends_on:
+      - auth
+      - product
+      - order
+    networks:
+      - network
+
+  auth:
+    container_name: auth
+    hostname: auth
+    build:
+      context: ./go-grpc-auth-svc
+    ports:
+      - "50051:50051"
+    depends_on:
+      - auth_db
+    networks:
+      - network
+    restart: always
+
+  product:
+    container_name: product
+    hostname: product
+    build:
+      context: ./go-grpc-product-svc
+    ports:
+      - "50052:50052"
+    depends_on:
+      - product_db
+    networks:
+      - network
+    restart: always
+
+  order:
+    container_name: order
+    hostname: order
+    build:
+      context: ./go-grpc-order-svc
+    ports:
+      - "50053:50053"
+    depends_on:
+      - order_db
+    networks:
+      - network
+    restart: always
+
+  auth_db:
+    container_name: auth_db
+    hostname: auth_db
+    image: postgres:14.1-alpine
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=auth_db
+    networks:
+      - network
+    restart: always
+
+  product_db:
+    container_name: product_db
+    hostname: product_db
+    image: postgres:14.1-alpine
+    ports:
+      - "5434:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=product_db
+    networks:
+      - network
+    restart: always
+
+  order_db:
+    container_name: order_db
+    hostname: order_db
+    image: postgres:14.1-alpine
+    ports:
+      - "5435:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=order_db
+    networks:
+      - network
+    restart: always
+
+networks:
+  network:
+    driver: 'bridge'
+
+
+
+
+
