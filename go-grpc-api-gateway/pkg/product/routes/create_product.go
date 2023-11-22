@@ -12,6 +12,7 @@ type CreateProductRequestBody struct {
 	Name  string `json:"name"`
 	Stock int64  `json:"stock"`
 	Price int64  `json:"price"`
+	Sku   int64  `json:"sku"`
 }
 
 func CreateProduct(ctx *gin.Context, c pb.ProductServiceClient) {
